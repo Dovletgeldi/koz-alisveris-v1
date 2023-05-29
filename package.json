@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "env": "^0.0.2",
+    "express": "^4.18.2",
+    "googleapis": "^118.0.0"
+  },
+  "name": "koz.tm",
+  "version": "1.0.0",
+  "main": "script.js",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node script.js",
+    "dev": "nodemon script.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
