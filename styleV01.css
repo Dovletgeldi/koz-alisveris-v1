@@ -186,6 +186,67 @@ input[type="number"]::-webkit-outer-spin-button {
   padding-bottom: 20px;
 }
 
+.p-slider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 50px 0px;
+}
+
+.product-slider-heading {
+  font-size: 28px;
+  text-transform: uppercase;
+  color: #313131;
+  text-align: center;
+  margin: 0px;
+}
+
+.product-box {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  margin: 0px 20px;
+}
+
+.p-img-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.p-img a,
+.p-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.p-img a img {
+  width: 100%;
+  height: 100%;
+  object-position: center;
+  object-fit: contain;
+}
+
+#imageContainer {
+  position: relative;
+  width: 400px; /* Adjust the width as needed */
+  height: 300px; /* Adjust the height as needed */
+  overflow: hidden;
+}
+
+#imageURL {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   table {

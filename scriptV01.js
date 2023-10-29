@@ -208,3 +208,91 @@ async function getDataFromSheet(phoneNumber) {
     );
   }
 }
+
+(async () => {
+  const adsSheet = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/1oj6CSda05eOaSpYyOGl2WrwH-1-3TGQoQJwTO5FLmzU/values/ads!B:S?key=AIzaSyCVdAOP5Sq6_2TsvgViEvHLC_hrrQJYCTo`
+  );
+  if (adsSheet.ok) {
+    const data = await adsSheet.json();
+
+    // const imgUrl = data.values[3][4];
+    // const suratUrl = document.getElementById("imageURL");
+    // suratUrl.src = imgUrl;
+
+    // const imgUrl2 = data.values[3][5];
+    // const suratUrl2 = document.getElementById("imageURL2");
+    // suratUrl2.src = imgUrl2;
+
+    // const imgUrl3 = data.values[3][6];
+    // const suratUrl3 = document.getElementById("imageURL3");
+    // suratUrl3.src = imgUrl3;
+
+    // const imgUrl4 = data.values[3][7];
+    // const suratUrl4 = document.getElementById("imageURL4");
+    // suratUrl4.src = imgUrl4;
+
+    // const imgUrl5 = data.values[3][8];
+    // const suratUrl5 = document.getElementById("imageURL5");
+    // suratUrl5.src = imgUrl5;
+
+    // const imgUrl6 = data.values[3][9];
+    // const suratUrl6 = document.getElementById("imageURL6");
+    // suratUrl6.src = imgUrl6;
+
+    // const imgUrl7 = data.values[3][10];
+    // const suratUrl7 = document.getElementById("imageURL7");
+    // suratUrl7.src = imgUrl7;
+
+    // const imgUrl8 = data.values[3][11];
+    // const suratUrl8 = document.getElementById("imageURL8");
+    // suratUrl8.src = imgUrl8;
+    // document.getElementById("tel-message").innerText = imgUrl;
+
+    const imageUrls = data.values[3].slice(4);
+    console.log(imageUrls);
+    let currentImageIndex = 0;
+
+    function updateImage() {
+      document.getElementById("imageURL").src = imageUrls[currentImageIndex];
+    }
+
+    window.nextImage = function () {
+      currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+      updateImage();
+    };
+
+    window.prevImage = function () {
+      currentImageIndex =
+        (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+      updateImage();
+    };
+
+    // Add event listener to the image
+    const imageElement = document.getElementById("imageURL");
+    imageElement.addEventListener("click", function (event) {
+      const rect = imageElement.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+
+      if (x < rect.width / 2) {
+        prevImage();
+      } else {
+        nextImage();
+      }
+    });
+
+    // Preload images
+    imageUrls.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+
+    // Update the image initially
+    updateImage();
+
+    const productTitles = data.values[3][1];
+    console.log(productTitles);
+  }
+
+  console.log("This function is automatically executed!");
+})();
