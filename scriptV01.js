@@ -192,9 +192,12 @@ async function getDataFromSheet(phoneNumber) {
       tableElement.appendChild(tbodyElement);
 
       // Append the table to the document body
-      document.body.appendChild(tableElement);
+      // document.body.appendChild(tableElement);
+      const container = document.getElementById("result"); // Replace 'containerElementId' with the ID of your main container
+      container.prepend(tableElement);
 
-      document.body.appendChild(information);
+      // document.body.appendChild(information);
+      container.prepend(information);
 
       information.innerHTML =
         "*Değerli müşterimiz siparişleriniz sistemimize sipariş verkdikten 24 saat sonra düşmektedir.";
@@ -209,89 +212,149 @@ async function getDataFromSheet(phoneNumber) {
   }
 }
 
+function shuffleArray(array) {
+  const startIndex = 3; // Start shuffling from the fourth element (index 3)
+  for (let i = array.length - 1; i > startIndex; i--) {
+    // Generate a random index from startIndex to i
+    const j = Math.floor(Math.random() * (i - startIndex + 1)) + startIndex;
+    // Swap elements at indices i and j
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 (async () => {
   const adsSheet = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/1oj6CSda05eOaSpYyOGl2WrwH-1-3TGQoQJwTO5FLmzU/values/ads!B:S?key=AIzaSyCVdAOP5Sq6_2TsvgViEvHLC_hrrQJYCTo`
+    "https://sheets.googleapis.com/v4/spreadsheets/1oj6CSda05eOaSpYyOGl2WrwH-1-3TGQoQJwTO5FLmzU/values/ads!B:S?key=AIzaSyCVdAOP5Sq6_2TsvgViEvHLC_hrrQJYCTo"
   );
+
   if (adsSheet.ok) {
     const data = await adsSheet.json();
+    let filteredValues = data.values;
 
-    // const imgUrl = data.values[3][4];
-    // const suratUrl = document.getElementById("imageURL");
-    // suratUrl.src = imgUrl;
+    filteredValues = shuffleArray(filteredValues);
+    console.log(filteredValues);
 
-    // const imgUrl2 = data.values[3][5];
-    // const suratUrl2 = document.getElementById("imageURL2");
-    // suratUrl2.src = imgUrl2;
+    filteredValues.forEach((row, index) => {
+      if (index < 3) return; // Skip the first three rows if they contain headers or irrelevant data
 
-    // const imgUrl3 = data.values[3][6];
-    // const suratUrl3 = document.getElementById("imageURL3");
-    // suratUrl3.src = imgUrl3;
+      const [
+        prdctCode,
+        prdctName,
+        ,
+        prdctPrice,
+        ,
+        ,
+        prdctStock,
+        prdctDescription,
+        prdctBrand,
+        ...prdctPhoto
+      ] = row;
 
-    // const imgUrl4 = data.values[3][7];
-    // const suratUrl4 = document.getElementById("imageURL4");
-    // suratUrl4.src = imgUrl4;
+      // Create a container for each product
+      const productContainer = document.createElement("div");
+      productContainer.classList.add("product-box");
+      productContainer.innerHTML = `<!-- product box -->
+      
+        <span class="p-discount">-20%</span>
+        <!-- image container -->
+        <div class="p-img-container">
+          <div class="p-img">
+            <a href="#">
+              <img id="imageURL" alt="photo" />
+            </a>
+            <div id="prevButton" onclick="prevImage()"></div>
+            <div id="nextButton" onclick="nextImage()"></div>
+          </div>
+        </div>
+    
+        <!-- text----------------->
+        <div class="p-box-text">
+          <!--category-->
+    
+          <div class="product-category">
+            <span id="product-brand"></span>
+            <a href="#" class="product-title" id="product-name"> </a>
+          </div>
+          <!--Title-->
+    
+          <span id="product-code"></span>
+          <!--Product Price-->
+          <div class="price-buy">
+            <span class="p-price" id="price"></span>
+          </div>
+        </div>`; // the product HTML string goes here
 
-    // const imgUrl5 = data.values[3][8];
-    // const suratUrl5 = document.getElementById("imageURL5");
-    // suratUrl5.src = imgUrl5;
+      const imageElement = productContainer.querySelector("#imageURL");
 
-    // const imgUrl6 = data.values[3][9];
-    // const suratUrl6 = document.getElementById("imageURL6");
-    // suratUrl6.src = imgUrl6;
+      imageElement.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the default anchor click behavior
+        const rect = imageElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
 
-    // const imgUrl7 = data.values[3][10];
-    // const suratUrl7 = document.getElementById("imageURL7");
-    // suratUrl7.src = imgUrl7;
+        if (x < rect.width / 2) {
+          prevImage();
+        } else {
+          nextImage();
+        }
+      });
 
-    // const imgUrl8 = data.values[3][11];
-    // const suratUrl8 = document.getElementById("imageURL8");
-    // suratUrl8.src = imgUrl8;
-    // document.getElementById("tel-message").innerText = imgUrl;
+      // Set the content for each product
+      const productCodeElement =
+        productContainer.querySelector("#product-code");
+      productCodeElement.textContent = `Ürün kodu: ${prdctCode}`;
 
-    const imageUrls = data.values[3].slice(4);
-    console.log(imageUrls);
-    let currentImageIndex = 0;
+      const productNameElement =
+        productContainer.querySelector("#product-name");
+      productNameElement.textContent = prdctName;
 
-    function updateImage() {
-      document.getElementById("imageURL").src = imageUrls[currentImageIndex];
-    }
+      const productPriceElement = productContainer.querySelector("#price");
+      productPriceElement.textContent = prdctPrice;
 
-    window.nextImage = function () {
-      currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
-      updateImage();
-    };
+      const productBrandElement =
+        productContainer.querySelector("#product-brand");
+      productBrandElement.textContent = prdctBrand;
 
-    window.prevImage = function () {
-      currentImageIndex =
-        (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
-      updateImage();
-    };
+      // Append the product container to the main section
+      document.querySelector(".p-slider").appendChild(productContainer);
 
-    // Add event listener to the image
-    const imageElement = document.getElementById("imageURL");
-    imageElement.addEventListener("click", function (event) {
-      const rect = imageElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
+      // Image navigation functions
+      let currentImageIndex = 0;
 
-      if (x < rect.width / 2) {
-        prevImage();
-      } else {
-        nextImage();
+      function updateImage() {
+        const imageUrlElement = productContainer.querySelector("#imageURL");
+        imageUrlElement.src = prdctPhoto[currentImageIndex];
       }
+
+      function nextImage() {
+        currentImageIndex = (currentImageIndex + 1) % prdctPhoto.length;
+        updateImage();
+      }
+
+      function prevImage() {
+        currentImageIndex =
+          (currentImageIndex - 1 + prdctPhoto.length) % prdctPhoto.length;
+        updateImage();
+      }
+
+      // Event listeners for next/prev buttons
+      const nextButton = productContainer.querySelector("#nextButton");
+      nextButton.onclick = nextImage;
+
+      const prevButton = productContainer.querySelector("#prevButton");
+      prevButton.onclick = prevImage;
+
+      // Preload images
+      prdctPhoto.forEach((url) => {
+        const img = new Image();
+        img.src = url;
+      });
+
+      // Update the image initially
+      updateImage();
     });
-
-    // Preload images
-    imageUrls.forEach((url) => {
-      const img = new Image();
-      img.src = url;
-    });
-
-    // Update the image initially
-    updateImage();
-
-    const productTitles = data.values[3][1];
-    console.log(productTitles);
+  } else {
+    console.error("Failed to fetch the ads sheet.");
   }
 
   console.log("This function is automatically executed!");
